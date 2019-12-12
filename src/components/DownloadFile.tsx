@@ -1,14 +1,16 @@
-import React from "react";
-import { Button, InputGroup, FormControl } from "react-bootstrap";
-import UploadProvider from "providers/UploadProvider";
-import { Formik, Form } from "formik";
+import { isFile } from '@rsksmart/rif-storage'
 import Provider from "components/Provider";
+import { saveAs } from 'file-saver';
+import { Form, Formik } from "formik";
+import UploadProvider from "providers/UploadProvider";
+import React from "react";
+import { Button, FormControl, InputGroup } from "react-bootstrap";
 
-interface FormValues {
+interface IFormValues {
   hash: string;
 }
 
-interface FormErrors {
+interface IFormErrors {
   hash?: string;
 }
 
@@ -19,13 +21,19 @@ export default () => (
       <UploadProvider.Consumer>
         {({ actions: { download } }) => (
           <Formik
-            validate={async ({ hash }: FormValues) => {
-              let errors: FormErrors = {};
+            validate={async ({ hash }: IFormValues) => {
+              const errors: IFormErrors = {};
               if (!hash) errors.hash = "Required";
               return errors;
             }}
-            onSubmit={({ hash }: FormValues, actions) => {
-              download(hash);
+            onSubmit={async ({ hash }: IFormValues, actions) => {
+              const result = await download(hash);
+              if(isFile(result)){
+                saveAs(new Blob([result]))
+              }else{
+                // TODO: Offer download of the files
+                console.log(Object.keys(result))
+              }
               actions.resetForm();
             }}
             initialValues={{

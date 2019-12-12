@@ -1,19 +1,17 @@
+import { Directory, DirectoryArrayEntry, Manager, Provider as EPROVIDER_TYPE } from '@rsksmart/rif-storage'
+import toBuffer from 'blob-to-buffer'
 import React, { Component, createContext } from "react";
 
-export enum EPROVIDER_TYPE {
-  SWARM = "Swarm",
-  IPFS = "IPFS"
-}
+export { EPROVIDER_TYPE}
 
 export interface IUploadProvider {
   state: {
     provider: EPROVIDER_TYPE;
-    rifStorage?: any; // TODO: change the type accordingly
   };
   actions: {
     setProvider: (provider: EPROVIDER_TYPE) => void;
     upload: (files: File[]) => Promise<string>;
-    download: (hash: string) => void;
+    download: (hash: string) => Promise<Buffer | Directory<Buffer>>;
   };
 }
 
@@ -22,10 +20,11 @@ const { Provider, Consumer } = createContext<IUploadProvider>({
     provider: EPROVIDER_TYPE.SWARM
   },
 
+
   actions: {
+    download: () => Promise.reject(),
     setProvider: () => {},
-    upload: () => new Promise((resolve, reject) => reject()),
-    download: () => {}
+    upload: () => Promise.reject(),
   }
 });
 
@@ -38,9 +37,15 @@ class UploadProvider extends Component<
   IUploadProviderProps,
   IUploadProviderState
 > {
+  private manager: Manager
+
   constructor(props: object) {
     super(props);
+    this.manager = new Manager()
 
+    // TODO: Set some Swarm nodes address here
+    this.manager.addProvider(EPROVIDER_TYPE.SWARM, { url: 'http://localhost:8500' })
+    this.manager.addProvider(EPROVIDER_TYPE.IPFS, '/ip4/64.225.12.177/tcp/1212')
     this.state = { provider: EPROVIDER_TYPE.SWARM };
 
     this.setProvider = this.setProvider.bind(this);
@@ -48,47 +53,58 @@ class UploadProvider extends Component<
     this.download = this.download.bind(this);
   }
 
-  componentDidMount() {
-    // TODO: Here you can set the storage provider
-    // Use this.setState(rifStorage) once done
-  }
-
-  setProvider(provider: EPROVIDER_TYPE) {
+  public setProvider(provider: EPROVIDER_TYPE) {
+    this.manager.makeActive(provider)
     this.setState({ provider });
   }
 
-  upload(files: File[]) {
-    // TODO: Add the upload here
-    console.log(this.state.provider); // this should give you the provider you are using
-    return new Promise<string>(resolve => resolve("<hash>"));
+  public async upload(files: File[]) {
+    return this.manager.put(await Promise.all(files.map(this.mapFile)));
   }
 
-  download(hash: string) {
-    // TODO: Add the download here
-    console.log(this.state.provider); // this should give you the provider you are using
-    console.log(hash);
+  public download(hash: string) {
+    return this.manager.get(hash)
   }
 
-  render() {
+  public render() {
     const { provider } = this.state;
     const { setProvider, upload, download } = this;
 
     return (
       <Provider
         value={{
-          state: {
-            provider
-          },
+
           actions: {
+            download,
             setProvider,
             upload,
-            download
+          },
+          state: {
+            provider
           }
         }}
       >
         {this.props.children}
       </Provider>
     );
+  }
+
+  private async mapFile(file: File): Promise<DirectoryArrayEntry<Buffer>> {
+    const data = new Promise((resolve, reject) => {
+      toBuffer(file, (err, buffer) => {
+        if(err){
+          reject(err)
+        }
+        resolve(buffer)
+      })
+    })
+
+    return {
+      contentType: file.type,
+      data: await data,
+      path: file.name,
+      size: file.size,
+    }
   }
 }
 
