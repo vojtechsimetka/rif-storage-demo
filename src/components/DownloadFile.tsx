@@ -1,6 +1,5 @@
-import { isFile } from '@rsksmart/rif-storage'
-import Provider from "components/Provider";
-import { saveAs } from 'file-saver';
+import { isFile } from "@rsksmart/rif-storage";
+import { saveAs } from "file-saver";
 import { Form, Formik } from "formik";
 import UploadProvider from "providers/UploadProvider";
 import React from "react";
@@ -15,71 +14,68 @@ interface IFormErrors {
 }
 
 export default () => (
-  <>
-    <Provider />
-    <div className="text-right">
-      <UploadProvider.Consumer>
-        {({ actions: { download } }) => (
-          <Formik
-            validate={async ({ hash }: IFormValues) => {
-              const errors: IFormErrors = {};
-              if (!hash) errors.hash = "Required";
-              return errors;
-            }}
-            onSubmit={async ({ hash }: IFormValues, actions) => {
-              const result = await download(hash);
-              if(isFile(result)){
-                saveAs(new Blob([result]))
-              }else{
-                // TODO: Offer download of the files
-                console.log(Object.keys(result))
-              }
-              actions.resetForm();
-            }}
-            initialValues={{
-              hash: ""
-            }}
-          >
-            {({
-              handleSubmit,
-              handleChange,
-              handleBlur,
-              values,
-              isValid,
-              errors
-            }) => (
-              <Form onSubmit={handleSubmit}>
-                <InputGroup className="mb-3" style={{ marginTop: "1em" }}>
-                  <FormControl
-                    aria-label="Hash"
-                    aria-describedby="basic-addon2"
-                    name="hash"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    defaultValue={values.hash}
-                    autoComplete="off"
-                    autoFocus
-                    required
-                  />
-                </InputGroup>
-                <div className="text-left">
-                  {errors.hash && (
-                    <small style={{ color: "red" }}>{errors.hash}</small>
-                  )}
-                </div>
-                <Button
-                  type="submit"
-                  variant="secondary"
-                  size="lg"
-                  disabled={!isValid}
-                >
-                  Retrieve
-                </Button>
-              </Form>
-            )}
-          </Formik>
-        )}
-      </UploadProvider.Consumer>
-    </div>
-  </>
+  <div className="text-right">
+    <UploadProvider.Consumer>
+      {({ actions: { download } }) => (
+        <Formik
+          validate={async ({ hash }: IFormValues) => {
+            const errors: IFormErrors = {};
+            if (!hash) errors.hash = "Required";
+            return errors;
+          }}
+          onSubmit={async ({ hash }: IFormValues, actions) => {
+            const result = await download(hash);
+            if (isFile(result)) {
+              saveAs(new Blob([result]));
+            } else {
+              // TODO: Offer download of the files
+              console.log(Object.keys(result));
+            }
+            actions.resetForm();
+          }}
+          initialValues={{
+            hash: ""
+          }}
+        >
+          {({
+            handleSubmit,
+            handleChange,
+            handleBlur,
+            values,
+            isValid,
+            errors
+          }) => (
+            <Form onSubmit={handleSubmit}>
+              <InputGroup className="mb-3" style={{ marginTop: "1em" }}>
+                <FormControl
+                  aria-label="Hash"
+                  aria-describedby="basic-addon2"
+                  name="hash"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  defaultValue={values.hash}
+                  autoComplete="off"
+                  autoFocus
+                  required
+                />
+              </InputGroup>
+              <div className="text-left">
+                {errors.hash && (
+                  <small style={{ color: "red" }}>{errors.hash}</small>
+                )}
+              </div>
+              <Button
+                type="submit"
+                variant="secondary"
+                size="lg"
+                disabled={!isValid}
+              >
+                Retrieve
+              </Button>
+            </Form>
+          )}
+        </Formik>
+      )}
+    </UploadProvider.Consumer>
+  </div>
 );
