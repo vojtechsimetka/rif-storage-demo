@@ -44,9 +44,9 @@ class UploadProvider extends Component<
     this.manager = new Manager()
 
     // TODO: Set some Swarm nodes address here
-    this.manager.addProvider(EPROVIDER_TYPE.SWARM, { url: 'http://localhost:8500' })
-    this.manager.addProvider(EPROVIDER_TYPE.IPFS, '/ip4/127.0.0.1/tcp/5001')
-    this.state = { provider: EPROVIDER_TYPE.SWARM };
+    this.manager.addProvider(EPROVIDER_TYPE.SWARM, { url: process.env.REACT_APP_SWARM || 'http://localhost:8500' })
+    this.manager.addProvider(EPROVIDER_TYPE.IPFS, process.env.REACT_APP_IPFS || '/ip4/127.0.0.1/tcp/5001')
+    this.state = { provider: EPROVIDER_TYPE.IPFS };
 
     this.setProvider = this.setProvider.bind(this);
     this.upload = this.upload.bind(this);
