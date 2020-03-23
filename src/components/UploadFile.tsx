@@ -59,6 +59,7 @@ export default () => {
               hash:
               <br />
               <pre>{hash}</pre>
+              <a className="btn btn-lg btn-primary" target="blank" href={`https://twitter.com/intent/tweet/?status=See my latest article on ${hash}`}>Tweet!</a>
             </div>
           )}
         </section>
