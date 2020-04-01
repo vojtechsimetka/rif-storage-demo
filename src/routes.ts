@@ -11,8 +11,8 @@
 import { createBrowserHistory } from "history";
 
 export const ROUTES = {
-  DOWNLOAD: "/",
-  UPLOAD: "/upload",
+  DOWNLOAD: "/download",
+  UPLOAD: "/",
 };
 
 export const history = createBrowserHistory();

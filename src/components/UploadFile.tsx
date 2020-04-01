@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Table, Button } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
-import UploadProvider from "providers/UploadProvider";
+import UploadProvider, { EPROVIDER_TYPE } from "providers/UploadProvider";
 import Provider from "components/Provider";
+
 
 export default () => {
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone();
@@ -10,7 +11,7 @@ export default () => {
 
   return (
     <UploadProvider.Consumer>
-      {({ actions: { upload } }) => (
+      {({ actions: { upload } ,state: {provider} }) => (
         <section className="upload-file-container">
           <Provider />
           <div {...getRootProps({ className: "dropzone mb-4" })}>
@@ -29,9 +30,10 @@ export default () => {
                   </tr>
                 </thead>
                 <tbody className="fs-11">
-                  {acceptedFiles.map(file => (
+                  {console.log({acceptedFiles})}
+                  {acceptedFiles.map(file=> (
                     <tr key={file.name}>
-                      <td className="text-left">{file.name}</td>
+                      <td className="text-left">{file.path}</td>
                       <td className="text-center">{file.type}</td>
                       <td className="text-right">{file.size} bytes</td>
                     </tr>
@@ -58,8 +60,9 @@ export default () => {
               Your file was successfully uploaded and is accessible under this
               hash:
               <br />
-              <pre>{hash}</pre>
-              <a className="btn btn-lg btn-primary" target="blank" href={`https://twitter.com/intent/tweet/?status=See my latest article on ${hash}`}>Tweet!</a>
+              <pre>{provider === EPROVIDER_TYPE.IPFS && "/ipfs/"}{hash}</pre>
+              {provider === EPROVIDER_TYPE.IPFS && <a className="btn btn-lg btn-secondary" target="blank" href={`https://ipfs.io/ipfs/${hash}`}>View upload</a>}
+              <a className="btn btn-lg btn-primary" target="blank" href={`https://twitter.com/intent/tweet/?status=See my latest article on RIF Storage. ${encodeURIComponent("https://ipfs.io/ipfs//"+hash)}&url=${provider === EPROVIDER_TYPE.IPFS && encodeURIComponent("https://ipfs.io/ipfs//"+hash)}`}>Tweet!</a>
             </div>
           )}
         </section>

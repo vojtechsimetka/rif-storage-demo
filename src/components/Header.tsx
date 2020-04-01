@@ -9,7 +9,7 @@ import { ROUTES } from "routes";
 
 export default () => (
   <Navbar variant="dark" bg="dark" expand="lg" sticky="top">
-    <LinkContainer to={ROUTES.DOWNLOAD}>
+    <LinkContainer to={ROUTES.UPLOAD}>
       <Navbar.Brand>
         <LogoNavbar />
       </Navbar.Brand>

@@ -17,7 +17,7 @@ export interface IUploadProvider {
 
 const { Provider, Consumer } = createContext<IUploadProvider>({
   state: {
-    provider: EPROVIDER_TYPE.SWARM
+    provider: EPROVIDER_TYPE.IPFS
   },
 
 
@@ -46,7 +46,9 @@ class UploadProvider extends Component<
     // TODO: Set some Swarm nodes address here
     this.manager.addProvider(EPROVIDER_TYPE.SWARM, { url: process.env.REACT_APP_SWARM || 'http://localhost:8500' })
     this.manager.addProvider(EPROVIDER_TYPE.IPFS, process.env.REACT_APP_IPFS || '/ip4/127.0.0.1/tcp/5001')
-    this.state = { provider: EPROVIDER_TYPE.IPFS };
+    const provider = EPROVIDER_TYPE.IPFS;
+    this.manager.makeActive(provider)
+    this.state = { provider };
 
     this.setProvider = this.setProvider.bind(this);
     this.upload = this.upload.bind(this);
@@ -101,7 +103,7 @@ class UploadProvider extends Component<
 
     return {
       data: await data,
-      path: file.name,
+      path: file.path,
       size: file.size,
     }
   }
