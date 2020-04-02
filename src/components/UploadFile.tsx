@@ -3,7 +3,7 @@ import { Table, Button } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
 import UploadProvider, { EPROVIDER_TYPE } from "providers/UploadProvider";
 import Provider from "components/Provider";
-
+import {IFile} from 'types'
 
 export default () => {
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone();
@@ -31,9 +31,9 @@ export default () => {
                 </thead>
                 <tbody className="fs-11">
                   {console.log({acceptedFiles})}
-                  {acceptedFiles.map(file=> (
+                  {acceptedFiles.map((file: File)=> (
                     <tr key={file.name}>
-                      <td className="text-left">{file.path}</td>
+                      <td className="text-left">{(file as IFile).path}</td>
                       <td className="text-center">{file.type}</td>
                       <td className="text-right">{file.size} bytes</td>
                     </tr>

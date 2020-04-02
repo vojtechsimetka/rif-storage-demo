@@ -1,6 +1,7 @@
 import { Directory, Entry, Manager, Provider as EPROVIDER_TYPE } from '@rsksmart/rif-storage'
 import toBuffer from 'blob-to-buffer'
 import React, { Component, createContext } from "react";
+import {IFile} from "types"
 
 export { EPROVIDER_TYPE}
 
@@ -103,7 +104,7 @@ class UploadProvider extends Component<
 
     return {
       data: await data,
-      path: file.path,
+      path: (file as IFile).path,
       size: file.size,
     }
   }
