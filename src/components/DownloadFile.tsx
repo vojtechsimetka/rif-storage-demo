@@ -1,16 +1,18 @@
-import { isFile } from "@rsksmart/rif-storage";
-import { saveAs } from "file-saver";
-import { Form, Formik } from "formik";
-import UploadProvider from "providers/UploadProvider";
-import React from "react";
-import { Button, FormControl, InputGroup } from "react-bootstrap";
+import { isFile } from '@rsksmart/rif-storage'
+import { saveAs } from 'file-saver'
+import { Form, Formik } from 'formik'
+import UploadProvider from 'providers/UploadProvider'
+import React from 'react'
+import Button from '@material-ui/core/Button'
+import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
+import TextField from '@material-ui/core/TextField'
 
-interface IFormValues {
-  hash: string;
+interface FormValues {
+  hash: string
 }
 
-interface IFormErrors {
-  hash?: string;
+interface FormErrors {
+  hash?: string
 }
 
 export default () => (
@@ -18,26 +20,27 @@ export default () => (
     <UploadProvider.Consumer>
       {({ actions: { download } }) => (
         <Formik
-          validate={async ({ hash }: IFormValues) => {
-            const errors: IFormErrors = {};
-            if (!hash) errors.hash = "Required";
-            return errors;
+          validate={({ hash }: FormValues) => {
+            const errors: FormErrors = {}
+
+            if (!hash) errors.hash = 'Required'
+            return errors
           }}
-          onSubmit={async ({ hash }: IFormValues, actions) => {
-            const result = await download(hash);
+          onSubmit={async ({ hash }: FormValues, actions) => {
+            const result = await download(hash)
+
             if (isFile(result)) {
-              saveAs(new Blob([result as Buffer]));
+              saveAs(new Blob([result as Buffer]))
             } else if (Object.keys(result).length === 1) {
               const filename = Object.keys(result)[0]
-              saveAs(new Blob([result[filename].data]), filename);
+              saveAs(new Blob([result[filename].data]), filename)
             } else {
               // TODO: Offer download of the files
-              console.log(Object.keys(result));
             }
-            actions.resetForm();
+            actions.resetForm()
           }}
           initialValues={{
-            hash: ""
+            hash: '',
           }}
         >
           {({
@@ -46,32 +49,30 @@ export default () => (
             handleBlur,
             values,
             isValid,
-            errors
+            errors,
           }) => (
             <Form onSubmit={handleSubmit}>
-              <InputGroup className="mb-3" style={{ marginTop: "1em" }}>
-                <FormControl
-                  aria-label="Hash"
-                  aria-describedby="basic-addon2"
-                  name="hash"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  defaultValue={values.hash}
-                  autoComplete="off"
-                  autoFocus
-                  required
-                />
-              </InputGroup>
+              <TextField
+                aria-label="Hash"
+                aria-describedby="basic-addon2"
+                name="hash"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                defaultValue={values.hash}
+                autoComplete="off"
+                autoFocus
+                required
+              />
               <div className="text-left">
                 {errors.hash && (
-                  <small style={{ color: "red" }}>{errors.hash}</small>
+                  <small style={{ color: 'red' }}>{errors.hash}</small>
                 )}
               </div>
               <Button
-                type="submit"
-                variant="secondary"
-                size="lg"
+                variant="contained"
+                color="primary"
                 disabled={!isValid}
+                startIcon={<CloudDownloadIcon />}
               >
                 Retrieve
               </Button>
@@ -81,4 +82,4 @@ export default () => (
       )}
     </UploadProvider.Consumer>
   </div>
-);
+)

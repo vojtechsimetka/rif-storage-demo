@@ -8,11 +8,11 @@
  * <LinkContainer to={ROUTES.EXAMPLE}><a>Link to example</a></LinkContainer>
  * <button onClick={() => history.push(ROUTES.EXAMPLE)}>Example button</button>
  */
-import { createBrowserHistory } from "history";
+import { createBrowserHistory } from 'history'
 
 export const ROUTES = {
-  DOWNLOAD: "/download",
-  UPLOAD: "/",
-};
+  DOWNLOAD: '/download',
+  UPLOAD: '/',
+}
 
-export const history = createBrowserHistory();
+export const history = createBrowserHistory()

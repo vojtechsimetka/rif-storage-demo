@@ -1,68 +1,80 @@
-import { Directory, Entry, Manager, Provider as EPROVIDER_TYPE } from '@rsksmart/rif-storage'
+import {
+  Directory,
+  Entry,
+  Manager,
+  Provider as EPROVIDER_TYPE,
+} from '@rsksmart/rif-storage'
 import toBuffer from 'blob-to-buffer'
-import React, { Component, createContext } from "react";
-import {IFile} from "types"
+import React, { Component, createContext } from 'react'
+import { FileWithPath } from 'types'
 
-export { EPROVIDER_TYPE}
+export { EPROVIDER_TYPE }
 
-export interface IUploadProvider {
-  state: {
-    provider: EPROVIDER_TYPE;
-  };
+export interface UploadProviderInterface {
+  state: {}
   actions: {
-    setProvider: (provider: EPROVIDER_TYPE) => void;
-    upload: (files: File[]) => Promise<string>;
-    download: (hash: string) => Promise<Buffer | Directory<Buffer>>;
-  };
+    upload: (files: File[]) => Promise<string>
+    download: (hash: string) => Promise<Buffer | Directory<Buffer>>
+  }
 }
-
-const { Provider, Consumer } = createContext<IUploadProvider>({
-  state: {
-    provider: EPROVIDER_TYPE.IPFS
-  },
-
+const { Provider, Consumer } = createContext<UploadProviderInterface>({
+  state: {},
 
   actions: {
     download: () => Promise.reject(),
-    setProvider: () => {},
     upload: () => Promise.reject(),
-  }
-});
+  },
+})
 
-interface IUploadProviderProps {}
-interface IUploadProviderState {
-  provider: EPROVIDER_TYPE;
+
+interface UploadProviderState {
+  provider: EPROVIDER_TYPE
+}
+
+async function mapFile(file: File): Promise<Entry<Buffer>> {
+  const data: Promise<Buffer> = new Promise((resolve, reject) => {
+    toBuffer(file, (err: Error, buffer: Buffer) => {
+      if (err) {
+        reject(err)
+      }
+      resolve(buffer)
+    })
+  })
+
+  return {
+    data: await data,
+    path: (file as FileWithPath).path,
+    size: file.size,
+  }
 }
 
 class UploadProvider extends Component<
-  IUploadProviderProps,
-  IUploadProviderState
+  {},
+  UploadProviderState
 > {
-  private manager: Manager
+  private manager: Manager;
 
   constructor(props: object) {
-    super(props);
+    super(props)
     this.manager = new Manager()
 
-    // TODO: Set some Swarm nodes address here
-    this.manager.addProvider(EPROVIDER_TYPE.SWARM, { url: process.env.REACT_APP_SWARM || 'http://localhost:8500' })
-    this.manager.addProvider(EPROVIDER_TYPE.IPFS, process.env.REACT_APP_IPFS || '/ip4/127.0.0.1/tcp/5001')
-    const provider = EPROVIDER_TYPE.IPFS;
+    this.manager.addProvider(
+      EPROVIDER_TYPE.IPFS,
+      process.env.REACT_APP_IPFS || '/ip4/127.0.0.1/tcp/5001',
+    )
+    const provider = EPROVIDER_TYPE.IPFS
     this.manager.makeActive(provider)
-    this.state = { provider };
+    this.state = { provider }
 
-    this.setProvider = this.setProvider.bind(this);
-    this.upload = this.upload.bind(this);
-    this.download = this.download.bind(this);
-  }
-
-  public setProvider(provider: EPROVIDER_TYPE) {
-    this.manager.makeActive(provider)
-    this.setState({ provider });
+    this.upload = this.upload.bind(this)
+    this.download = this.download.bind(this)
   }
 
   public async upload(files: File[]) {
-    return this.manager.put(await Promise.all(files.map(this.mapFile)));
+    const buffer = await Promise.all(files.map(mapFile))
+    // TODO: this sort should not be here
+    const fls = buffer.sort((a, b) => (a.path < b.path ? 1 : -1))
+    return this.manager.put(fls)
   }
 
   public download(hash: string) {
@@ -70,44 +82,26 @@ class UploadProvider extends Component<
   }
 
   public render() {
-    const { provider } = this.state;
-    const { setProvider, upload, download } = this;
+    const { children } = this.props
+    const { provider } = this.state
+    const { upload, download } = this
 
     return (
       <Provider
         value={{
-
           actions: {
             download,
-            setProvider,
             upload,
           },
           state: {
-            provider
-          }
+            provider,
+          },
         }}
       >
-        {this.props.children}
+        {children}
       </Provider>
-    );
-  }
-
-  private async mapFile(file: File): Promise<Entry<Buffer>> {
-    const data: Promise<Buffer> = new Promise((resolve, reject) => {
-      toBuffer(file, (err, buffer) => {
-        if(err){
-          reject(err)
-        }
-        resolve(buffer)
-      })
-    })
-
-    return {
-      data: await data,
-      path: (file as IFile).path,
-      size: file.size,
-    }
+    )
   }
 }
 
-export default { Consumer, Provider: UploadProvider };
+export default { Consumer, Provider: UploadProvider }

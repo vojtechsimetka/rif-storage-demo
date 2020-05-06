@@ -1,32 +1,71 @@
 {
-  "name": "rif-storage-ui-demo",
+  "name": "@rsksmart/rif-storage-publish-website",
   "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@rsksmart/rif-storage": "^0.1.0",
-    "blob-to-buffer": "^1.2.8",
-    "bootstrap": "^4.4.1",
-    "file-saver": "^2.0.2",
-    "formik": "^2.0.7",
-    "react": "^16.12.0",
-    "react-bootstrap": "^1.0.0-beta.12",
-    "react-dom": "^16.12.0",
-    "react-dropzone": "^10.2.1",
-    "react-router": "^5.1.2",
-    "react-router-bootstrap": "^0.25.0",
-    "react-router-dom": "^5.1.2",
-    "react-scripts": "3.3.0"
+  "description": "RIF Publish is a tool for uploading news and articles to decentralized storage",
+  "keywords": [
+    "RIF",
+    "decentralized",
+    "censorship-resistent",
+    "RSK"
+  ],
+  "homepage": ".",
+  "bugs": {
+    "url": "https://github.com/rsksmart/rif-storage-publish-website/issues/"
+  },
+  "license": "MIT",
+  "files": [
+    "types",
+    "lib",
+    "dist"
+  ],
+  "main": "src/index.tsx",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rsksmart/rif-storage-publish-website.git"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "tslint": "tslint 'src/**/*.ts*'",
-    "prettify": "prettier --single-quote --write 'src/**/*.ts*'"
+    "lint": "npx tasegir lint && eslint 'src/**/*.ts*'"
   },
-  "eslintConfig": {
-    "extends": "react-app"
+  "dependencies": {
+    "@material-ui/core": "^4.9.13",
+    "@material-ui/icons": "^4.9.1",
+    "@rsksmart/rif-storage": "^0.1.0",
+    "@rsksmart/rif-ui": "github:rsksmart/rif-ui",
+    "blob-to-buffer": "^1.2.8",
+    "file-saver": "^2.0.2",
+    "formik": "^2.1.4",
+    "history": "^4.10.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-dropzone": "^11.0.1",
+    "react-router": "^5.1.2",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "3.4.1",
+    "web3": "^1.2.7"
   },
+  "devDependencies": {
+    "@types/jest": "25.2.1",
+    "@types/node": "13.13.5",
+    "@types/react": "16.9.34",
+    "@types/react-dom": "^16.9.7",
+    "@types/react-router-bootstrap": "^0.24.5",
+    "@types/react-router-dom": "^5.1.5",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.19.0",
+    "tasegir": "^1.7.1",
+    "typescript": "3.8.3"
+  },
+  "engines": {
+    "node": ">=10.0.0",
+    "npm": ">=6.0.0"
+  },
+  "types": "types/index.d.ts",
   "browserslist": {
     "production": [
       ">0.2%",
@@ -38,20 +77,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@types/jest": "24.9.1",
-    "@types/node": "13.5.0",
-    "@types/react": "16.9.19",
-    "@types/react-dom": "^16.9.5",
-    "@types/react-router-bootstrap": "^0.24.5",
-    "@types/react-router-dom": "^5.1.3",
-    "prettier": "^1.19.1",
-    "tslint": "^5.20.1",
-    "tslint-config-airbnb": "^5.11.2",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-plugin-prettier": "^2.0.1",
-    "tslint-react": "^4.1.0",
-    "typescript": "3.7.5"
   }
 }

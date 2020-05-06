@@ -1,3 +1,3 @@
-export interface IFile extends File {
+export interface FileWithPath extends File {
   path: string
 }

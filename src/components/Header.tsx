@@ -1,29 +1,20 @@
-import React from "react";
-import { LinkContainer } from "react-router-bootstrap";
-import Navbar from "react-bootstrap/Navbar";
-import Nav from "react-bootstrap/Nav";
+import React from 'react'
+import { Header } from '@rsksmart/rif-ui'
+import { ROUTES } from 'routes'
+import Login from './Login'
 
-import LogoNavbar from "rifui/LogoNavbar";
 
-import { ROUTES } from "routes";
+export default () => {
+  const headerItems = [
+    {
+      title: 'Upload',
+      to: ROUTES.UPLOAD,
+    },
+    {
+      title: 'Download',
+      to: ROUTES.DOWNLOAD,
+    },
+  ]
 
-export default () => (
-  <Navbar variant="dark" bg="dark" expand="lg" sticky="top">
-    <LinkContainer to={ROUTES.UPLOAD}>
-      <Navbar.Brand>
-        <LogoNavbar />
-      </Navbar.Brand>
-    </LinkContainer>
-    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-    <Navbar.Collapse id="basic-navbar-nav">
-      <Nav className="ml-auto justify-content-end">
-        <LinkContainer to={ROUTES.DOWNLOAD}>
-          <Nav.Link>Download</Nav.Link>
-        </LinkContainer>
-        <LinkContainer to={ROUTES.UPLOAD}>
-          <Nav.Link>Upload</Nav.Link>
-        </LinkContainer>
-      </Nav>
-    </Navbar.Collapse>
-  </Navbar>
-);
+  return <Header hreflogo={ROUTES.UPLOAD} items={headerItems} login={Login} />
+}

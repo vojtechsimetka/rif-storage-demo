@@ -1,93 +1,91 @@
-import React, { useState } from "react";
-import { Table, Button } from "react-bootstrap";
-import { useDropzone } from "react-dropzone";
-import UploadProvider, { EPROVIDER_TYPE } from "providers/UploadProvider";
-import Provider from "components/Provider";
-import { IFile } from "types";
+import React, { useState } from 'react'
+import { useDropzone } from 'react-dropzone'
+import UploadProvider from 'providers/UploadProvider'
+import Button from '@material-ui/core/Button'
+import CloudUploadIcon from '@material-ui/icons/CloudUpload'
+import FileTable from 'components/FileTable'
+import { FileWithPath } from 'types'
 
 export default () => {
-  const { acceptedFiles, getRootProps, getInputProps } = useDropzone();
-  const [hash, setHash] = useState();
-  const [uploading, setUploading] = useState();
+  const [hash, setHash] = useState<string | undefined>()
+  const [uploading, setUploading] = useState(false)
+  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+    onDrop: () => {
+      setHash(undefined)
+      setUploading(false)
+    },
+  })
 
   return (
     <UploadProvider.Consumer>
-      {({ actions: { upload }, state: { provider } }) => (
-        <section className="upload-file-container">
-          {/*<Provider />*/}
-          <div {...getRootProps({ className: "dropzone mb-4" })}>
-            <input {...getInputProps()} />
-            <span>Drag 'n' drop some files here, or click to select files</span>
+      {({ actions: { upload } }) => (
+        <>
+          {/* <Provider /> */}
+          <div className="upload-file-container">
+
+            <div
+              // eslint-disable-next-line react/jsx-props-no-spreading
+              {...getRootProps({ className: 'dropzone mb-4' })}
+            >
+              <input
+                // eslint-disable-next-line react/jsx-props-no-spreading
+                {...getInputProps()}
+              />
+              <span>
+                Drag &apos;n&apos; drop some files here, or click to select files
+              </span>
+            </div>
           </div>
           {acceptedFiles.length > 0 && (
             <div>
-              <Table striped borderless responsive size="sm">
-                <thead>
-                  <tr>
-                    <th className="text-left">File Name</th>
-                    <th className="text-center">Type</th>
-                    <th className="text-right">Size</th>
-                  </tr>
-                </thead>
-                <tbody className="fs-11">
-                  {console.log({ acceptedFiles })}
-                  {acceptedFiles.map((file: File) => (
-                    <tr key={file.name}>
-                      <td className="text-left">{(file as IFile).path}</td>
-                      <td className="text-center">{file.type}</td>
-                      <td className="text-right">{file.size} bytes</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-              <div className="text-right">
-                {!hash && (
-                  <Button
-                    variant="secondary"
-                    size="lg"
-                    disabled={uploading}
-                    onClick={async () => {
-                      setUploading(true);
-                      const hash = await upload(acceptedFiles);
-                      setHash(hash);
-                      setUploading(false);
-                    }}
-                  >
-                    {uploading ? "Uploading" : "Upload"}
-                  </Button>
-                )}
-              </div>
+              <FileTable acceptedFiles={acceptedFiles as FileWithPath[]} />
+              {!hash && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  startIcon={<CloudUploadIcon />}
+                  disabled={uploading}
+                  size="large"
+                  onClick={async () => {
+                    setUploading(true)
+                    setHash(await upload(acceptedFiles))
+                    setUploading(false)
+                  }}
+                >
+                  {uploading ? 'Uploading' : 'Upload'}
+                </Button>
+              )}
             </div>
           )}
           {hash && (
-            <div>
+            <>
               Your file was successfully uploaded and is accessible under this
               hash:
               <br />
               <pre>{hash}</pre>
-              {provider === EPROVIDER_TYPE.IPFS && (
-                <a
-                  className="btn btn-lg btn-secondary"
-                  target="blank"
-                  href={`https://ipfs.io/ipfs/${hash}`}
-                >
-                  View upload
-                </a>
-              )}
-              <a
-                className="btn btn-lg btn-primary"
+              <Button
+                variant="contained"
+                color="secondary"
+                target="blank"
+                href={`https://ipfs.io/ipfs/${hash}`}
+                size="large"
+              >
+                View upload
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
                 target="blank"
                 href={`https://twitter.com/intent/tweet/?status=See my latest article on RIF Storage. ${encodeURIComponent(
-                  "https://ipfs.io/ipfs//" + hash
-                )}&url=${provider === EPROVIDER_TYPE.IPFS &&
-                  encodeURIComponent("https://ipfs.io/ipfs//" + hash)}`}
+                  `https://ipfs.io/ipfs//${hash}`,
+                )}&url=${encodeURIComponent(`https://ipfs.io/ipfs//${hash}`)}`}
               >
                 Tweet!
-              </a>
-            </div>
+              </Button>
+            </>
           )}
-        </section>
+        </>
       )}
     </UploadProvider.Consumer>
-  );
-};
+  )
+}

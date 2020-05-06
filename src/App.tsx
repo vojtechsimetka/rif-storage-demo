@@ -1,31 +1,22 @@
-import React from "react";
-import { Router } from "react-router-dom";
-import Container from "react-bootstrap/Container";
+import React from 'react'
+import { Router } from 'react-router-dom'
+import { ThemeProvider } from '@material-ui/core/styles'
+import { theme } from '@rsksmart/rif-ui'
 
-import UploadContext from "providers/UploadProvider";
-import Routes from "views/Routes";
-import Header from "components/Header";
-import { history } from "routes";
+import UploadContext from 'providers/UploadProvider'
+import Routes from 'views/Routes'
+import Header from 'components/Header'
+import { history } from 'routes'
 
-const App: React.FC = () => {
-  return (
+const App: React.FC = () => (
+  <ThemeProvider theme={theme}>
     <UploadContext.Provider>
       <Router history={history}>
-        <div
-          style={{
-            minHeight: "100vh",
-            display: "flex",
-            flexDirection: "column"
-          }}
-        >
-          <Header />
-          <Container>
-            <Routes />
-          </Container>
-        </div>
+        <Header />
+        <Routes />
       </Router>
     </UploadContext.Provider>
-  );
-};
+  </ThemeProvider>
+)
 
-export default App;
+export default App

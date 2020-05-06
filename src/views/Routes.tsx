@@ -1,12 +1,12 @@
-import React from "react";
-import { Route, Switch } from "react-router-dom";
+import React from 'react'
+import { Route, Switch } from 'react-router-dom'
 
-import { ROUTES } from "routes";
+import { ROUTES } from 'routes'
 
 // views
-import Download from "views/Download";
-import Upload from "views/Upload";
-import NotFound from "views/NotFound";
+import Download from 'views/Download'
+import Upload from 'views/Upload'
+import NotFound from 'views/NotFound'
 
 export default () => (
   <Switch>
@@ -15,4 +15,4 @@ export default () => (
 
     <Route component={NotFound} />
   </Switch>
-);
+)
