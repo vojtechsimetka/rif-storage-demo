@@ -18,7 +18,7 @@
 # Usage
 
  1. Run IPFS node
- 1. Configure IPFS node connection settings ([here](https://github.com/rsksmart/rif-storage-publish-website/blob/master/.env)) or use the defaults (IPFS: `localhost:5001`).
+ 1. Configure IPFS node connection settings either by setting `REACT_APP_IPFS`, changing it in ([.env.local](https://github.com/rsksmart/rif-storage-publish-website/blob/master/.env)) or just use the defaults (IPFS: `localhost:5001`).
  1. Run `npm install` and `npm start`
 
 ## Available Scripts
