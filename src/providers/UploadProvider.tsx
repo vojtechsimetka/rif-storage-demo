@@ -7,6 +7,7 @@ import {
 import toBuffer from 'blob-to-buffer'
 import React, { Component, createContext } from 'react'
 import { FileWithPath } from 'types'
+import { IPFS_CONNECTION } from 'config'
 
 export { EPROVIDER_TYPE }
 
@@ -59,8 +60,7 @@ class UploadProvider extends Component<
     this.manager = new Manager()
 
     this.manager.addProvider(
-      EPROVIDER_TYPE.IPFS,
-      process.env.REACT_APP_IPFS || '/ip4/127.0.0.1/tcp/5001',
+      EPROVIDER_TYPE.IPFS, IPFS_CONNECTION,
     )
     const provider = EPROVIDER_TYPE.IPFS
     this.manager.makeActive(provider)
@@ -73,12 +73,12 @@ class UploadProvider extends Component<
   public async upload(files: File[]) {
     const buffer = await Promise.all(files.map(mapFile))
     // TODO: this sort should not be here
-    const fls = buffer.sort((a, b) => (a.path < b.path ? 1 : -1))
-    return this.manager.put(fls)
+    // const fls = buffer.sort((a, b) => (a.path < b.path ? 1 : -1))
+    return this.manager.put(buffer, {progress: console.log})
   }
 
   public download(hash: string) {
-    return this.manager.get(hash)
+    return this.manager.get(hash, {progress: console.log})
   }
 
   public render() {

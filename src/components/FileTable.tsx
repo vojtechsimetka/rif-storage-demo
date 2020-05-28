@@ -1,6 +1,5 @@
 import React from 'react'
 import TableContainer from '@material-ui/core/TableContainer'
-import Paper from '@material-ui/core/Paper'
 import TableHead from '@material-ui/core/TableHead'
 import Table from '@material-ui/core/Table'
 import TableRow from '@material-ui/core/TableRow'
@@ -24,7 +23,7 @@ interface FileTableProps {
 }
 
 export default ({ acceptedFiles }: FileTableProps) => (
-  <TableContainer component={Paper}>
+  <TableContainer>
     <Table size="small" aria-label="a dense table">
       <TableHead>
         <TableRow>
