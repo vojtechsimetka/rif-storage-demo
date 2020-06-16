@@ -72,7 +72,7 @@ class UploadProvider extends Component<
 
   public async upload(files: File[]) {
     const buffer = await Promise.all(files.map(mapFile))
-    // TODO: this sort should not be here
+    // TODO: this sort should not be needed here
     // const fls = buffer.sort((a, b) => (a.path < b.path ? 1 : -1))
     return this.manager.put(buffer, {progress: console.log})
   }
