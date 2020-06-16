@@ -5,7 +5,7 @@ import TextField from '@material-ui/core/TextField'
 import { IPFS_GATEWAY } from 'config'
 
 export default () => {
-  const [hash, setHash] = useState<string|undefined>()
+  const [hash, setHash] = useState<string | undefined>()
   return (
     <div className="text-right">
       <TextField
