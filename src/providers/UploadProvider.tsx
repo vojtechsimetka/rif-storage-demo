@@ -1,5 +1,4 @@
 import {
-  Directory,
   Entry,
   Manager,
   Provider as EPROVIDER_TYPE,
@@ -15,18 +14,14 @@ export interface UploadProviderInterface {
   state: {}
   actions: {
     upload: (files: File[]) => Promise<string>
-    download: (hash: string) => Promise<Buffer | Directory<Buffer>>
   }
 }
 const { Provider, Consumer } = createContext<UploadProviderInterface>({
   state: {},
-
   actions: {
-    download: () => Promise.reject(),
     upload: () => Promise.reject(),
   },
 })
-
 
 interface UploadProviderState {
   provider: EPROVIDER_TYPE
@@ -49,48 +44,37 @@ async function mapFile(file: File): Promise<Entry<Buffer>> {
   }
 }
 
-class UploadProvider extends Component<
-  {},
-  UploadProviderState
-> {
+class UploadProvider extends Component<{}, UploadProviderState> {
   private manager: Manager;
 
   constructor(props: object) {
     super(props)
     this.manager = new Manager()
 
-    this.manager.addProvider(
-      EPROVIDER_TYPE.IPFS, IPFS_CONNECTION,
-    )
+    this.manager.addProvider(EPROVIDER_TYPE.IPFS, IPFS_CONNECTION)
     const provider = EPROVIDER_TYPE.IPFS
     this.manager.makeActive(provider)
     this.state = { provider }
 
     this.upload = this.upload.bind(this)
-    this.download = this.download.bind(this)
   }
 
   public async upload(files: File[]) {
     const buffer = await Promise.all(files.map(mapFile))
     // TODO: this sort should not be needed here
     // const fls = buffer.sort((a, b) => (a.path < b.path ? 1 : -1))
-    return this.manager.put(buffer, {progress: console.log})
-  }
-
-  public download(hash: string) {
-    return this.manager.get(hash, {progress: console.log})
+    return this.manager.put(buffer)
   }
 
   public render() {
     const { children } = this.props
     const { provider } = this.state
-    const { upload, download } = this
+    const { upload } = this
 
     return (
       <Provider
         value={{
           actions: {
-            download,
             upload,
           },
           state: {

@@ -1,8 +1,6 @@
 lib
 types
 
-.eslintrc
-
 # Logs
 logs
 *.log

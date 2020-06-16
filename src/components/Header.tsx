@@ -3,18 +3,8 @@ import { Header } from '@rsksmart/rif-ui'
 import { ROUTES } from 'routes'
 import Login from './Login'
 
-
 export default () => {
-  const headerItems = [
-    // {
-    //   title: 'Upload',
-    //   to: ROUTES.UPLOAD,
-    // },
-    // {
-    //   title: 'Download',
-    //   to: ROUTES.DOWNLOAD,
-    // },
-  ]
+  const headerItems = []
 
   return <Header hreflogo={ROUTES.UPLOAD} items={headerItems} login={Login} />
 }
