@@ -11,7 +11,7 @@
 import { createBrowserHistory } from 'history'
 
 export const ROUTES = {
-  DOWNLOAD: '/download',
+  DOWNLOAD: '/ipfs/:hash',
   UPLOAD: '/',
 }
 

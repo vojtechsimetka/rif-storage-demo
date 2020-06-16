@@ -6,14 +6,14 @@ import Login from './Login'
 
 export default () => {
   const headerItems = [
-    {
-      title: 'Upload',
-      to: ROUTES.UPLOAD,
-    },
-    {
-      title: 'Download',
-      to: ROUTES.DOWNLOAD,
-    },
+    // {
+    //   title: 'Upload',
+    //   to: ROUTES.UPLOAD,
+    // },
+    // {
+    //   title: 'Download',
+    //   to: ROUTES.DOWNLOAD,
+    // },
   ]
 
   return <Header hreflogo={ROUTES.UPLOAD} items={headerItems} login={Login} />
